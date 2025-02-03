@@ -4,13 +4,10 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   test:
-    name: Rodar Testes do Backend
+    name: Rodar Testes no Backend
     runs-on: ubuntu-latest
     steps:
       - name: Clonar repositório
@@ -32,7 +29,7 @@ jobs:
           python -m unittest discover
 
   build:
-    name: Construir e Publicar Imagens Docker
+    name: Construir e Enviar Imagens Docker
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -42,12 +39,12 @@ jobs:
       - name: Login no Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
-      - name: Construir e enviar backend
+      - name: Construir e Enviar Backend
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/backend-app:latest ./backend
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/backend-app:latest
 
-      - name: Construir e enviar frontend
+      - name: Construir e Enviar Frontend
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/frontend-app:latest ./frontend
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend-app:latest
@@ -57,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Conectar ao Servidor e Atualizar Contêineres
+      - name: Conectar ao Servidor e Atualizar Containers
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_HOST }}
