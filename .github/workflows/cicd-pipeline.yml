@@ -57,7 +57,7 @@ jobs:
       - name: Conectar ao Servidor e Atualizar Containers
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: sadowolfy.ddns.net
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
