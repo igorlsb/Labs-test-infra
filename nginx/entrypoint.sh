@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Definir variáveis
-DOMAIN="frontend.dominiotest1.com"
+DOMAIN="frontendtest626.com"
 WEBROOT="/var/www/certbot"
 CERT_PATH="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
 
