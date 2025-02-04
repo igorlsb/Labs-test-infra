@@ -49,9 +49,6 @@ services:
       - backend
     networks:
       - app_network
-    # Não expor porta diretamente, pois o NGINX faz esse papel
-
-
 
   prometheus:
     image: prom/prometheus

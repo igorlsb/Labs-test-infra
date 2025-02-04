@@ -3,7 +3,7 @@
 set -e  # Interrompe o script em caso de erro
 
 # Definições
-DOMINIOS=("frontend.dominiotest1.com")
+DOMINIOS=("dominioteste.com")
 EMAIL="igor.lsb@hotmail.com"
 CERT_PATH="/etc/letsencrypt/live/${DOMINIOS[0]}/fullchain.pem"
 
