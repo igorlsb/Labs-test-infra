@@ -29,12 +29,11 @@ services:
   frontend:
     image: igorlsb/frontend-app:latest
     restart: always
-    ports:
-      - "80:80"  # alterado para evitar conflito com NGINX
     depends_on:
       - backend
     networks:
       - app_network
+    # Não expor porta diretamente, pois o NGINX faz esse papel
 
   nginx:
     build:
@@ -42,14 +41,12 @@ services:
     container_name: nginx-load-balancer
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./certbot/www:/var/www/certbot  # Compartilha o diretório de validação do Certbot
-      - ./certbot/conf:/etc/letsencrypt  # Compartilha os certificados SSL
+      - ./certbot/www:/var/www/certbot  # Diretório de validação do Certbot
+      - ./certbot/conf:/etc/letsencrypt  # Certificados SSL
     ports:
-    ports:
-      - "8080:80"
+      - "80:80"
       - "443:443"
     depends_on:
-      - certbot
       - backend
       - frontend
     networks:
@@ -60,10 +57,8 @@ services:
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet && nginx -s reload; sleep 12h & wait $${!}; done'"
     restart: always
-    depends_on:
-      - nginx
     networks:
       - app_network
 
