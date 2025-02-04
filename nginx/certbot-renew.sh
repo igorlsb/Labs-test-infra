@@ -1,22 +1,27 @@
 #!/bin/bash
 
+# Habilita modo estrito para interromper a execução em caso de erro
+set -e
+
 # Lista de domínios a serem protegidos com SSL
-DOMINIOS="frontend.dominiotest1.com"
+DOMINIOS=("frontend.dominiotest1.com")
 EMAIL="igor.lsb@hotmail.com"
 
 # Diretório onde os certificados são armazenados
-CERT_PATH="/etc/letsencrypt/live/frontend.dominiotest1.com/fullchain.pem"
+CERT_PATH="/etc/letsencrypt/live/${DOMINIOS[0]}/fullchain.pem"
 
 # Garante que o diretório do Certbot existe
 mkdir -p /var/www/certbot
+chmod -R 755 /var/www/certbot
 
 # Verifica se já existe um certificado válido, senão gera um novo
 if [ ! -f "$CERT_PATH" ]; then
     echo "Nenhum certificado SSL encontrado. Gerando um novo..."
+
     certbot certonly --webroot -w /var/www/certbot --email "$EMAIL" \
         --agree-tos --no-eff-email --force-renewal \
-        $(for domain in $DOMINIOS; do echo -n " -d $domain"; done)
-    
+        $(for domain in "${DOMINIOS[@]}"; do echo -n " -d $domain"; done)
+
     if [ $? -eq 0 ]; then
         echo "✅ Certificado gerado com sucesso!"
     else
