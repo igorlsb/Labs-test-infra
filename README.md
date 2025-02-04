@@ -1,4 +1,3 @@
-```markdown
 # Infraestrutura DevOps com Docker, NGINX, Let's Encrypt e Monitoramento (Em andamento)
 
 Este projeto implementa uma infraestrutura **escalável, segura e automatizada** para uma aplicação web, utilizando **Docker, NGINX (com HTTPS via Let's Encrypt), balanceamento de carga e monitoramento com Prometheus, Grafana e Loki**.
