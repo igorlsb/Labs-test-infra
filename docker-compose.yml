@@ -41,12 +41,15 @@ services:
       context: ./nginx
     container_name: nginx-load-balancer
     volumes:
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/www:/var/www/certbot  # Compartilha o diretório de validação do Certbot
+      - ./certbot/conf:/etc/letsencrypt  # Compartilha os certificados SSL
+    ports:
     ports:
       - "8080:80"
       - "443:443"
     depends_on:
+      - certbot
       - backend
       - frontend
     networks:
@@ -61,6 +64,8 @@ services:
     restart: always
     depends_on:
       - nginx
+    networks:
+      - app_network
 
   prometheus:
     image: prom/prometheus
