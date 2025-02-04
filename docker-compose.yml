@@ -13,6 +13,8 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - app_network
 
   backend:
     image: igorlsb/backend-app:latest
@@ -28,7 +30,7 @@ services:
     image: igorlsb/frontend-app:latest
     restart: always
     ports:
-      - "8081:80"
+      - "8082:80"  # Alteramos para evitar conflito com NGINX
     depends_on:
       - backend
     networks:
@@ -42,14 +44,13 @@ services:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
     ports:
-      - "8081:8081"  # IP acessando 8081 será redirecionado para HTTPS
+      - "8081:8081"  # Redirecionamento IP 8081 → HTTPS
       - "80:80"
       - "443:443"
     depends_on:
       - backend
     networks:
       - app_network
-
 
   prometheus:
     image: prom/prometheus
