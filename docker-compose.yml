@@ -6,26 +6,55 @@ services:
     container_name: database
     restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: securepassword
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: mydatabase
     ports:
       - "5432:5432"
 
   backend:
-    build: ./backend
-    container_name: backend
+    image: igorlsb/backend-app:latest
+    deploy:
+      replicas: 3  # Escalando backend
     restart: always
-    ports:
-      - "5000:5000"
     depends_on:
       - database
 
   frontend:
-    build: ./frontend
-    container_name: frontend
+    image: igorlsb/frontend-app:latest
     restart: always
     ports:
       - "80:80"
     depends_on:
       - backend
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-load-balancer
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  loki:
+    image: grafana/loki:latest
+    volumes:
+      - ./monitoring/loki-config.yml:/etc/loki/loki-config.yml
+    ports:
+      - "3100:3100"
