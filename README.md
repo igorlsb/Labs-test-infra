@@ -81,7 +81,6 @@ Após iniciar os serviços, acesse:
 | Serviço        | URL |
 |---------------|-----------|
 | **Frontend**  | `https://frontend.dominiotest1.com` |
-| **Backend**   | `https://backend.dominiotest1.com` |
 | **Monitoramento (Grafana)** | `https://grafana.dominiotest1.com` |
 | **Logs (Loki)** | `https://loki.dominiotest1.com` |
 | **Métricas (Prometheus)** | `https://prometheus.dominiotest1.com` |
