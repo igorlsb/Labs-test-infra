@@ -12,6 +12,6 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Copiar script de renovação do Certbot
 COPY certbot-renew.sh /usr/local/bin/certbot-renew.sh
 RUN chmod +x /usr/local/bin/certbot-renew.sh
-
+EXPOSE 80
 # Comando de inicialização
 CMD ["sh", "-c", "/usr/local/bin/certbot-renew.sh & nginx -g 'daemon off;'"]
