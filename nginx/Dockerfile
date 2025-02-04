@@ -1,15 +1,15 @@
 FROM nginx:alpine
 
-# Instalando Certbot dentro do container
+# Instalar Certbot e dependências
 RUN apk add --no-cache certbot bash openssl
 
-# Criando diretórios necessários para Certbot
+# Criar diretórios necessários para Certbot
 RUN mkdir -p /var/www/certbot /etc/letsencrypt/live /etc/letsencrypt/archive
 
-# Copiando configuração do NGINX
+# Copiar configuração do NGINX
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copiando script de renovação automática do Certbot
+# Copiar script de renovação do Certbot
 COPY certbot-renew.sh /usr/local/bin/certbot-renew.sh
 RUN chmod +x /usr/local/bin/certbot-renew.sh
 
