@@ -12,5 +12,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Comando de inicialização (espera certificados antes de iniciar)
-CMD ["/bin/sh", "-c", "/usr/local/bin/entrypoint.sh"]
+# Definir como ponto de entrada
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
