@@ -34,3 +34,6 @@ fi
 (crontab -l | grep -v "certbot renew" ; echo "0 */12 * * * certbot renew --quiet --post-hook 'systemctl restart nginx'") | crontab -
 
 echo "✅ Configuração finalizada! Certificados gerenciados automaticamente. 🚀"
+
+echo "🔄 Inicializando NGINX..."
+exec nginx -g "daemon off;"
