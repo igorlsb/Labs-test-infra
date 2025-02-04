@@ -8,9 +8,9 @@ RUN mkdir -p /var/www/certbot /etc/letsencrypt/live /etc/letsencrypt/archive \
 # Copiar configuração do NGINX
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copiar o script de entrada
+# Copiar o script de entrada e garantir permissões
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Comando de inicialização (aguarda certificados antes de iniciar)
-CMD ["/usr/local/bin/entrypoint.sh"]
+# Comando de inicialização (espera certificados antes de iniciar)
+CMD ["/bin/sh", "-c", "/usr/local/bin/entrypoint.sh"]
