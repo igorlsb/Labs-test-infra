@@ -22,10 +22,11 @@ services:
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet && nginx -s reload; sleep 12h & wait $${!}; done'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet && docker exec nginx-load-balancer nginx -s reload; sleep 12h & wait $${!}; done'"
     restart: always
     networks:
       - app_network
+
   database:
     image: postgres:latest
     container_name: database
