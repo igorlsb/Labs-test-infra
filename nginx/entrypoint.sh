@@ -1,20 +1,24 @@
 #!/bin/bash
 
-# Criar diretórios necessários para o Certbot
-mkdir -p /var/www/certbot /etc/letsencrypt/live /etc/letsencrypt/archive
+# Definir variáveis
+DOMAIN="frontend.dominiotest1.com"
+WEBROOT="/var/www/certbot"
+CERT_PATH="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
 
-# Permissões corretas para evitar erro de acesso
-chmod -R 755 /var/www/certbot /etc/letsencrypt
-chown -R root:root /etc/letsencrypt
+# Criar diretórios necessários para o Certbot e garantir as permissões
+mkdir -p "$WEBROOT" "/etc/letsencrypt/live" "/etc/letsencrypt/archive"
 
-# Verifica se os certificados existem
-CERT_PATH="/etc/letsencrypt/live/frontend.dominiotest1.com/fullchain.pem"
+# Garantir permissões corretas para evitar erro de acesso
+chmod -R 755 "$WEBROOT" "/etc/letsencrypt"
+chown -R www-data:www-data "$WEBROOT"
+chown -R root:root "/etc/letsencrypt"
 
+# Verifica se os certificados já existem
 if [ ! -f "$CERT_PATH" ]; then
     echo "🔹 Nenhum certificado SSL encontrado. Gerando um novo..."
     
-    certbot certonly --webroot -w /var/www/certbot --email igor.lsb@hotmail.com \
-        --agree-tos --no-eff-email --force-renewal -d frontend.dominiotest1.com
+    certbot certonly --webroot -w "$WEBROOT" --email igor.lsb@hotmail.com \
+        --agree-tos --no-eff-email --force-renewal -d "$DOMAIN"
 
     if [ $? -eq 0 ]; then
         echo "✅ Certificado gerado com sucesso!"
@@ -26,8 +30,7 @@ else
     echo "✔ Certificado SSL já existe."
 fi
 
-# Iniciar renovação automática dos certificados a cada 12 horas
-(crontab -l 2>/dev/null; echo "0 */12 * * * certbot renew --quiet --post-hook 'nginx -s reload'") | crontab -
+# Adicionar renovação automática dos certificados no cron (sem duplicação)
+(crontab -l | grep -v "certbot renew" ; echo "0 */12 * * * certbot renew --quiet --post-hook 'systemctl restart nginx'") | crontab -
 
-echo "🔄 Inicializando NGINX..."
-exec nginx -g "daemon off;"
+echo "✅ Configuração finalizada! Certificados gerenciados automaticamente. 🚀"
