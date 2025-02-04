@@ -17,13 +17,14 @@ chown -R root:root /etc/letsencrypt
 if [ ! -f "$CERT_PATH" ]; then
     echo "Nenhum certificado encontrado. Gerando novo..."
     
-    certbot certonly --webroot -w /var/www/certbot --email "$EMAIL" \
-        --agree-tos --no-eff-email --force-renewal \
-        $(for domain in "${DOMINIOS[@]}"; do echo -n " -d $domain"; done)
+    for domain in "${DOMINIOS[@]}"; do
+        certbot certonly --webroot -w /var/www/certbot --email "$EMAIL" \
+            --agree-tos --no-eff-email --force-renewal -d "$domain"
+    done
 
     if [ $? -eq 0 ]; then
         echo "✅ Certificado gerado com sucesso!"
-        systemctl restart nginx  # Garante que o NGINX reinicie após a geração do certificado
+        systemctl restart nginx  # Reinicia o NGINX apenas se a geração for bem-sucedida
     else
         echo "❌ Erro ao gerar certificado SSL. Verifique as configurações."
         exit 1
