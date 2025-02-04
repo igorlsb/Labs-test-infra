@@ -1,19 +1,24 @@
+# Usa a imagem oficial do NGINX baseado no Alpine
 FROM nginx:alpine
 
-# Instalar Certbot e dependências
-RUN apk add --no-cache certbot bash openssl
+# Instalar OpenSSL para criar certificados autoassinados
+RUN apk add --no-cache openssl bash
 
-# Criar diretórios necessários para o Certbot
-RUN mkdir -p /var/www/certbot /etc/letsencrypt/live /etc/letsencrypt/archive \
-    && chmod -R 755 /var/www/certbot /etc/letsencrypt \
-    && chown -R root:root /etc/letsencrypt
+# Criar diretório para armazenar certificados SSL
+RUN mkdir -p /etc/nginx/ssl \
+    && chmod -R 755 /etc/nginx/ssl
 
-# Copiar configuração do NGINX
+# Gerar certificado SSL autoassinado dentro da imagem do contêiner
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/nginx/ssl/nginx-selfsigned.key \
+    -out /etc/nginx/ssl/nginx-selfsigned.crt \
+    -subj "/C=BR/ST=SP/L=SaoPaulo/O=LocalTest/CN=dominioteste.com"
+
+# Criar parâmetros Diffie-Hellman para segurança extra
+RUN openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+
+# Copiar o arquivo de configuração do NGINX
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copiar script de inicialização
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Comando de inicialização
-CMD ["/usr/local/bin/entrypoint.sh"]
+# Comando de inicialização do NGINX
+CMD ["nginx", "-g", "daemon off;"]
