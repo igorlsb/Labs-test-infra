@@ -30,7 +30,7 @@ services:
     image: igorlsb/frontend-app:latest
     restart: always
     ports:
-      - "80:80"  # Alteramos para evitar conflito com NGINX
+      - "8081:80"  # Alteramos para evitar conflito com NGINX
     depends_on:
       - backend
     networks:
