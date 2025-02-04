@@ -6,9 +6,7 @@ services:
       context: ./nginx
     container_name: nginx-load-balancer
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt:/etc/letsencrypt  # Montando certificados locais
-      - /var/www/certbot:/var/www/certbot  # Diretório de validação do Certbot
+      - /etc/nginx/ssl:/etc/nginx/ssl  # Volume para armazenar os certificados
     ports:
       - "80:80"
       - "443:443"
