@@ -52,10 +52,16 @@ Adicione a seguinte entrada ao arquivo `C:\Windows\System32\drivers\etc\hosts` p
 ### **4. Gerar os Certificados SSL (Certificado Local)**
 Antes de rodar a aplicação, garanta que os certificados SSL foram gerados corretamente:
 ```bash
+mkdir -p /etc/nginx/ssl
+
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout certs/nginx-selfsigned.key \
-  -out certs/nginx-selfsigned.crt \
-  -subj "/C=BR/ST=Estado/L=Cidade/O=Organizacao/CN=dominioteste.com"
+    -keyout /etc/nginx/ssl/nginx-selfsigned.key \
+    -out /etc/nginx/ssl/nginx-selfsigned.crt \
+    -subj "/C=BR/ST=SP/L=SaoPaulo/O=LocalTest/CN=frontend.dominioteste.com" \
+    -addext "subjectAltName=DNS:frontend.dominioteste.com,DNS:prometheus.dominioteste.com,DNS:grafana.dominioteste.com,DNS:loki.dominioteste.com"
+
+openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+"
 ```
 Isso criará os certificados SSL na pasta **`./certs`**.
 
