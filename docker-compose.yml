@@ -38,23 +38,27 @@ services:
       - DATABASE_USER=admin
       - DATABASE_PASSWORD=adminpass
       - DATABASE_NAME=mydb
+    depends_on:
+      database:
+        condition: service_healthy  
     networks:
       - app_network
 
   database:
-    image: postgres:latest  # 🔹 Pode mudar para mysql:latest se preferir
+    build:
+      context: ./database 
     container_name: database
     restart: always
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: adminpass
-      POSTGRES_DB: mydb
+    healthcheck:  
+      test: ["CMD", "pg_isready", "-U", "admin"]
+      interval: 5s
+      retries: 5
     ports:
-      - "5432:5432"  # 🔹 Apenas para testes, remova em produção
+      - "5432:5432"
     networks:
       - app_network
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # 🔹 Persistência dos dados
+      - postgres_data:/var/lib/postgresql/data
 
   prometheus:
     image: prom/prometheus
