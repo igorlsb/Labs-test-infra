@@ -1,7 +1,15 @@
 global:
-  scrape_interval: 5s
+  scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'backend'
+  - job_name: 'prometheus'
     static_configs:
-      - targets: ['backend_1:5000', 'backend_2:5000', 'backend_3:5000']
+      - targets: ['localhost:9090']
+
+  - job_name: 'frontend'
+    static_configs:
+      - targets: ['frontend:80']
+
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-load-balancer:80']

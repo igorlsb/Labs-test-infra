@@ -5,26 +5,42 @@ services:
     build:
       context: ./nginx
     container_name: nginx-load-balancer
+    restart: always
     ports:
       - "80:80"
       - "443:443"
     depends_on:
+      - backend
       - frontend
       - grafana
       - prometheus
       - loki
     networks:
       - app_network
+
   frontend:
     image: igorlsb/frontend-app:latest
     restart: always
     networks:
       - app_network
 
+  backend:
+    build:
+      context: ./backend
+    deploy:
+      replicas: 3  # 🔹 Executa 3 instâncias do backend
+      restart_policy:
+        condition: always
+    networks:
+      - app_network
+
   prometheus:
     image: prom/prometheus
+    container_name: prometheus
+    restart: always
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     ports:
       - "9090:9090"
     networks:
@@ -32,8 +48,12 @@ services:
 
   grafana:
     image: grafana/grafana
+    container_name: grafana
+    restart: always
     ports:
       - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
     networks:
@@ -41,8 +61,11 @@ services:
 
   loki:
     image: grafana/loki:latest
+    container_name: loki
+    restart: always
     volumes:
       - ./monitoring/loki-config.yml:/etc/loki/loki-config.yml
+      - loki_data:/loki
     ports:
       - "3100:3100"
     networks:
@@ -51,3 +74,8 @@ services:
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  loki_data:
