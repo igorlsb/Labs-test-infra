@@ -46,7 +46,10 @@ POSTGRES_PASSWORD=securepassword
 ### **3. Configuração do Hosts no Windows**
 Adicione a seguinte entrada ao arquivo `C:\Windows\System32\drivers\etc\hosts` para que o domínio local funcione corretamente:
 ```
-192.168.3.21 dominioteste.com
+192.168.3.21 frontend.dominioteste.com
+192.168.3.21 prometheus.dominioteste.com
+192.168.3.21 grafana.dominioteste.com
+192.168.3.21 loki.dominioteste.com
 ```
 
 ### **4. Gerar os Certificados SSL (Certificado Local)**
@@ -80,8 +83,10 @@ A infraestrutura conta com monitoramento via **Prometheus, Grafana e Loki**:
 **Grafana** exibe dashboards para análise de desempenho  
 **Loki** centraliza logs dos contêineres para troubleshooting  
 
-### **Acesso ao Grafana**
-Para acessar os dashboards, vá para **[https://grafana.dominiotest1.com](https://grafana.dominiotest1.com)** e use:
+Prometheus acessível via https://prometheus.dominioteste.com
+Grafana acessível via https://grafana.dominioteste.com
+Loki acessível via https://loki.dominioteste.com
+Frontend acessível via https://frontend.dominioteste.com
 
 - **Usuário:** `admin`
 - **Senha:** `admin` (ou altere no arquivo `docker-compose.yml`)

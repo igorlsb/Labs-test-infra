@@ -1,12 +1,6 @@
 version: '3.8'
 
 services:
-  frontend:
-    image: igorlsb/frontend-app:latest
-    restart: always
-    networks:
-      - app_network
-
   nginx:
     build:
       context: ./nginx
@@ -19,6 +13,11 @@ services:
       - grafana
       - prometheus
       - loki
+    networks:
+      - app_network
+  frontend:
+    image: igorlsb/frontend-app:latest
+    restart: always
     networks:
       - app_network
 
