@@ -1,19 +1,16 @@
 global:
-  scrape_interval: 15s
+  scrape_interval: 5s  # 🔹 Coleta métricas a cada 5 segundos
 
 scrape_configs:
-  - job_name: 'prometheus'
+  - job_name: 'backend'
+    metrics_path: '/metrics'  
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['backend:8000']
 
-  - job_name: 'frontend'
+  - job_name: 'docker'
     static_configs:
-      - targets: ['frontend:80']
+      - targets: ['cadvisor:8080']
 
   - job_name: 'nginx'
     static_configs:
-      - targets: ['nginx-load-balancer:80']
-
-  - job_name: 'backend'
-    static_configs:
-      - targets: ['backend:8000']
+      - targets: ['nginx-exporter:9113']

@@ -94,9 +94,33 @@ services:
     volumes:
       - ./monitoring/loki-config.yml:/etc/loki/loki-config.yml
       - loki_data:/loki
+    ports:
+      - "3100:3100"
     networks:
       - app_network
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
 
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: nginx-exporter
+    command: "-nginx.scrape-uri=http://nginx:80/stub_status"
+    ports:
+      - "9113:9113"
+    networks:
+      - app_network
+    depends_on:
+      - nginx
 networks:
   app_network:
     driver: bridge
