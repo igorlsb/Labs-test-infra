@@ -20,8 +20,8 @@ services:
   frontend:
     build:
       context: ./frontend
-    image: igorlsb/frontend-app:latest  
-    restart: always
+    image: igorlsb/frontend-app:latest
+    restart: always  
     networks:
       - app_network
 
@@ -29,9 +29,9 @@ services:
     build:
       context: ./backend
     deploy:
-      replicas: 3  # 🔹 Escalabilidade
-      restart_policy:
-        condition: always
+      replicas: 3
+      restart_policy:  
+        condition: on-failure  
     networks:
       - app_network
 
