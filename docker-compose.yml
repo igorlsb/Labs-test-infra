@@ -45,10 +45,15 @@ services:
       - app_network
 
   database:
+    image: postgres:latest
     build:
-      context: ./database 
+      context: ./database
     container_name: database
     restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpass
+      POSTGRES_DB: mydb
     healthcheck:  
       test: ["CMD", "pg_isready", "-U", "admin"]
       interval: 5s
