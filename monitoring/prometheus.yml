@@ -13,3 +13,7 @@ scrape_configs:
   - job_name: 'nginx'
     static_configs:
       - targets: ['nginx-load-balancer:80']
+
+  - job_name: 'backend'
+    static_configs:
+      - targets: ['backend:8000']
