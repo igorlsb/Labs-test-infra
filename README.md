@@ -96,8 +96,3 @@ O pipeline de integração e entrega contínua (**CI/CD**) foi implementado, mas
 3. **Certificado Local para SSL:** Implementado para garantir conexões seguras sem depender de serviços externos como Let's Encrypt. O certificado foi gerado localmente apenas para demonstração, pois o Let's Encrypt exige o registro de um domínio.  
 4. **Prometheus, Grafana e Loki para Monitoramento:** Permitem coleta de métricas detalhadas e análise de logs, garantindo visibilidade sobre a infraestrutura.  
 5. **Pipeline CI/CD:** Implementado para automação do build, testes e deploy, mas com limitações devido à configuração do roteador.  
-
----
-## **Conclusão**
-Esta infraestrutura fornece um ambiente seguro e escalável para aplicações web. Ainda há desafios com a configuração de rede para o CI/CD, mas todos os serviços essenciais estão configurados corretamente. 🚀
-
