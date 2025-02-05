@@ -37,7 +37,6 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
-    restart: always
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -49,7 +48,6 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana
-    restart: always
     ports:
       - "3000:3000"
     volumes:
@@ -62,7 +60,6 @@ services:
   loki:
     image: grafana/loki:latest
     container_name: loki
-    restart: always
     volumes:
       - ./monitoring/loki-config.yml:/etc/loki/loki-config.yml
       - loki_data:/loki
