@@ -6,18 +6,116 @@
     <title>Frontend</title>
 </head>
 <body>
-    <h1>Frontend funcionando com Docker!</h1>
-    <button onclick="buscarUsuarios()">Buscar Usuários</button>
-    <div id="resultado"></div>
+    <h1>Frontend conectado ao Backend</h1>
+
+    <h2>Adicionar Usuário</h2>
+    <input type="text" id="nomeUsuario" placeholder="Nome do Usuário">
+    <button onclick="adicionarUsuario()">Adicionar</button>
+
+    <h2>Lista de Usuários</h2>
+    <button onclick="buscarUsuarios()">Atualizar Lista</button>
+    <ul id="listaUsuarios"></ul>
 
     <script>
+        // 🔹 Função para buscar usuários do backend
         function buscarUsuarios() {
-            fetch('/api/users')  // 🔹 Chama a API do backend
+            fetch('/api/users')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('resultado').innerHTML = JSON.stringify(data, null, 2);
+                    let lista = document.getElementById('listaUsuarios');
+                    lista.innerHTML = "";
+                    data.forEach(user => {
+                        let li = document.createElement("li");
+                        li.textContent = `ID: ${user.id} - Nome: ${user.nome}`;
+                        lista.appendChild(li);
+                    });
                 })
                 .catch(error => console.error('Erro ao buscar usuários:', error));
+        }
+
+        // 🔹 Função para adicionar um novo usuário
+        function adicionarUsuario() {
+            let nome = document.getElementById('nomeUsuario').value;
+            if (!nome) {
+                alert("Por favor, insira um nome.");
+                return;
+            }
+
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nome: nome })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(`Usuário ${data.nome} adicionado com ID ${data.id}`);
+                document.getElementById('nomeUsuario').value = "";  // Limpa o input
+                buscarUsuarios();  // Atualiza a lista
+            })
+            .catch(error => console.error('Erro ao adicionar usuário:', error));
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend</title>
+</head>
+<body>
+    <h1>Frontend conectado ao Backend</h1>
+
+    <h2>Adicionar Usuário</h2>
+    <input type="text" id="nomeUsuario" placeholder="Nome do Usuário">
+    <button onclick="adicionarUsuario()">Adicionar</button>
+
+    <h2>Lista de Usuários</h2>
+    <button onclick="buscarUsuarios()">Atualizar Lista</button>
+    <ul id="listaUsuarios"></ul>
+
+    <script>
+        // 🔹 Função para buscar usuários do backend
+        function buscarUsuarios() {
+            fetch('/api/users')
+                .then(response => response.json())
+                .then(data => {
+                    let lista = document.getElementById('listaUsuarios');
+                    lista.innerHTML = "";
+                    data.forEach(user => {
+                        let li = document.createElement("li");
+                        li.textContent = `ID: ${user.id} - Nome: ${user.nome}`;
+                        lista.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Erro ao buscar usuários:', error));
+        }
+
+        // 🔹 Função para adicionar um novo usuário
+        function adicionarUsuario() {
+            let nome = document.getElementById('nomeUsuario').value;
+            if (!nome) {
+                alert("Por favor, insira um nome.");
+                return;
+            }
+
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nome: nome })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(`Usuário ${data.nome} adicionado com ID ${data.id}`);
+                document.getElementById('nomeUsuario').value = "";  // Limpa o input
+                buscarUsuarios();  // Atualiza a lista
+            })
+            .catch(error => console.error('Erro ao adicionar usuário:', error));
         }
     </script>
 </body>

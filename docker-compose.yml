@@ -11,6 +11,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - database
       - grafana
       - prometheus
       - loki
@@ -21,7 +22,7 @@ services:
     build:
       context: ./frontend
     image: igorlsb/frontend-app:latest
-    restart: always  
+    restart: always
     networks:
       - app_network
 
@@ -30,10 +31,30 @@ services:
       context: ./backend
     deploy:
       replicas: 3
-      restart_policy:  
-        condition: on-failure  
+      restart_policy:
+        condition: on-failure
+    environment:
+      - DATABASE_HOST=database
+      - DATABASE_USER=admin
+      - DATABASE_PASSWORD=adminpass
+      - DATABASE_NAME=mydb
     networks:
       - app_network
+
+  database:
+    image: postgres:latest  # 🔹 Pode mudar para mysql:latest se preferir
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpass
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"  # 🔹 Apenas para testes, remova em produção
+    networks:
+      - app_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # 🔹 Persistência dos dados
 
   prometheus:
     image: prom/prometheus
@@ -72,6 +93,7 @@ networks:
     driver: bridge
 
 volumes:
+  postgres_data:
   prometheus_data:
   grafana_data:
   loki_data:
