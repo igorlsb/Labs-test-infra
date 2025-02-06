@@ -3,24 +3,25 @@ import psycopg2
 import os
 import logging
 from contextlib import closing
-from prometheus_client import start_http_server, Counter, Histogram
+from prometheus_client import generate_latest, Counter, Histogram
+from prometheus_client import CollectorRegistry, CONTENT_TYPE_LATEST
 
-# 🔹 Configuração de logs para facilitar depuração
+# Configuração de logs
 logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 
-# 🔹 Configurações do banco de dados
+# Configurações do banco de dados
 DB_HOST = os.getenv("DATABASE_HOST", "database")
 DB_USER = os.getenv("DATABASE_USER", "admin")
 DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "adminpass")
 DB_NAME = os.getenv("DATABASE_NAME", "mydb")
 
-# 🔹 Definição de métricas do Prometheus
+# Definição de métricas do Prometheus
 REQUEST_COUNT = Counter('http_requests_total', 'Total de requisições recebidas', ['method', 'endpoint'])
 REQUEST_LATENCY = Histogram('http_request_duration_seconds', 'Duração das requisições', ['endpoint'])
 
-# 🔹 Função para obter a conexão com o banco
+# Função para obter a conexão com o banco
 def get_db_connection():
     try:
         conn = psycopg2.connect(
@@ -34,7 +35,7 @@ def get_db_connection():
         logging.error(f"Erro ao conectar ao banco de dados: {e}")
         return None
 
-# 🔹 Rota para buscar todos os usuários
+# Rota para buscar todos os usuários
 @app.route('/api/users', methods=['GET'])
 def get_users():
     REQUEST_COUNT.labels(method='GET', endpoint='/api/users').inc()
@@ -50,7 +51,7 @@ def get_users():
         conn.close()
         return jsonify([{"id": u[0], "nome": u[1]} for u in users])
 
-# 🔹 Rota para adicionar um novo usuário
+# Rota para adicionar um novo usuário
 @app.route('/api/users', methods=['POST'])
 def add_user():
     REQUEST_COUNT.labels(method='POST', endpoint='/api/users').inc()
@@ -76,14 +77,17 @@ def add_user():
 
         return jsonify({"id": user_id, "nome": data["nome"]}), 201
 
-# 🔹 Endpoint de status para health check
+# Endpoint de métricas do Prometheus
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+
+# Endpoint de status para health check
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "ok"}), 200
 
-# 🔹 Iniciar servidor
+# Iniciar servidor
 if __name__ == '__main__':
-    # Inicia servidor de métricas do Prometheus na porta 8001
-    start_http_server(8001)
     logging.info("Backend rodando na porta 8000")
     app.run(host="0.0.0.0", port=8000)
