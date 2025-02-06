@@ -48,10 +48,11 @@ POSTGRES_PASSWORD=securepassword
 ### 3. Configuração do Hosts no Windows
 Adicione a seguinte entrada ao arquivo `C:\Windows\System32\drivers\etc\hosts` para que o domínio local funcione corretamente:
 ```txt
-192.168.3.21 frontend.dominioteste.com
-192.168.3.21 prometheus.dominioteste.com
-192.168.3.21 grafana.dominioteste.com
-192.168.3.21 loki.dominioteste.com
+192.168.3.21(Seu ip local do servidor) frontend.dominioteste.com
+192.168.3.21(Seu ip local do servidor) prometheus.dominioteste.com
+192.168.3.21(Seu ip local do servidor) grafana.dominioteste.com
+192.168.3.21(Seu ip local do servidor) loki.dominioteste.com
+
 ```
 
 ### 4. Gerar os Certificados SSL (Certificado Local)
