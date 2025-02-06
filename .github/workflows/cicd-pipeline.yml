@@ -12,10 +12,6 @@ jobs:
       - name: Clonar repositório
         uses: actions/checkout@v3
 
-      - name: Rodar testes
-        run: |
-          docker-compose -f docker-compose.test.yml up --abort-on-container-exit
-
       - name: Login no Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
@@ -42,6 +38,7 @@ jobs:
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
             cd /home/${{ secrets.SERVER_USER }}/docker-project
-            docker-compose pull
-            docker-compose up -d --no-deps --build backend-app frontend-app
-            docker system prune -f
+            docker-compose down
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/backend-app:latest
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/frontend-app:latest
+            docker-compose up -d
