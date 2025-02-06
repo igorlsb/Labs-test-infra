@@ -1,6 +1,6 @@
 global:
-  scrape_interval: 5s  # 🔹 Coleta métricas a cada 5 segundos
-
+  scrape_interval: 5s  
+  
 scrape_configs:
   - job_name: 'backend'
     metrics_path: '/metrics'  
